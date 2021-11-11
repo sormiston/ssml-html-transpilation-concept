@@ -12,14 +12,13 @@ export function transpileToSSML(src: Element) {
    rootSpeak.setAttribute("xmlns:emo", "http://www.w3.org/2009/10/emotionml");
    rootSpeak.setAttribute("xml:lang", "en-US");
    rootSpeak.append(...src.childNodes);
-  // doc.append(rootSpeak)
   return doc
-  // return src.children as HTMLCollection;
 }
 
 function createElementIterator(root: Element) {
   const nodeFilter = {
     acceptNode: function (node: Element) {
+      // if Element has recognized ssml tag in its classlist...
       if (
         [...node.classList].find((classString) => {
           return (
@@ -59,7 +58,7 @@ function editPass(root: Element) {
   }
   newTag = prefixIfNeeded(newTag);
 
-  const newElt = document.createElement(newTag!);
+  const newElt = document.createElementNS("http://www.w3.org/2001/10/synthesis", newTag!);
 
   attributeTransfer(src, newElt);
 
@@ -115,7 +114,7 @@ function attributeTransfer(src: Element, target: Element) {
 
 // SSML TAG CONSTANTS
 
-const SSML_TAGS = {
+export const SSML_TAGS = {
   voice: "voice",
   lang: "lang",
   p: "p",
@@ -129,9 +128,10 @@ const SSML_TAGS = {
   sayAs: "say-as",
   audio: "audio",
   sub: "sub",
+  break: "break"
 };
 
-const MSTTS_PREFIXED_TAGS = {
+export const MSTTS_PREFIXED_TAGS = {
   expressAs: "mstts:express-as",
   silence: "mstts:silence",
   backgroundAudio: "mstts:backgroundaudio",
