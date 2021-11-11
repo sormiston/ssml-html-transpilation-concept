@@ -1,0 +1,53 @@
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  width: 600px;
+  margin: 0 auto;
+}
+
+
+#toHTML { 
+  padding: 6px 6px 20px 20px;
+  border: 1px solid blue;
+ }
+ 
+.voice {
+  line-height: 40px;
+}
+
+.voice:before {
+  content: attr(data-content);
+  height: 100%;
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.express-as:before {
+  content: attr(data-content);
+  color: blue;
+}
+.express-as:after {
+  content: "❮/❯";
+  color: blue;
+}
+
+/* Prosody (monolithic) */
+.prosody {
+  border-bottom:rgba(102, 102, 255, 1);
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  padding-bottom: 6px;
+}
+
+/* Pronunciation */
+.say-as, .sub {
+  border-bottom:rgba(251, 102, 103, 1);
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  padding-bottom: 6px;
+}
+
+
+
