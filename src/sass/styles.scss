@@ -3,14 +3,20 @@
 }
 
 .container {
-  width: 600px;
+  width: 400px;
   margin: 0 auto;
 }
 
-
-#toHTML { 
-  padding: 6px 6px 20px 20px;
+.ff-entry { 
+  // padding: 6px 6px 20px 20px;
   border: 1px solid blue;
+  
+  .voice-block {
+    padding-left: 6rem;
+    :not(&:last-child) {
+      margin-bottom: 1rem;
+    }
+  }
  }
  
 .voice {
@@ -19,9 +25,13 @@
 
 .voice:before {
   content: attr(data-content);
-  height: 100%;
-  display: inline-block;
-  margin-right: 20px;
+  position: relative;
+  float: right;
+  right: calc(100% + 2rem);
+  width: 4rem;
+  text-align: center;
+  // height: 100%;
+  // display: inline-block;
 }
 
 .express-as:before {

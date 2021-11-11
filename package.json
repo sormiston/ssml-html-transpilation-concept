@@ -2,11 +2,18 @@
   "name": "ssml-editing-3",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "sass": "ttab -a iTerm2 -t 'ssml-editor-sass-watch' sass src/sass/styles.scss dist/styles/styles.css --watch",
+    "tsc": "ttab -a iTerm2 -t 'ssml-editor-tsc' tsc -w",
+    "serve": "ttab -a iTerm2 -t 'ssml-edit-dev-server' live-server",
+    "start": "run-s tsc sass serve"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "npm-run-all": "^4.1.5",
+    "ttab": "^0.7.2"
+  }
 }

@@ -17,16 +17,7 @@ function createElementIterator(doc: XMLDocument) {
       } else return NodeFilter.FILTER_SKIP;
     },
   };
-  // const elementIteratorPreflight = document.createNodeIterator(
-  //   doc.firstElementChild!,
-  //   NodeFilter.SHOW_ELEMENT,
-  //   nodeFilter
-  // );
-
-  // let run
-  // while ((run = elementIteratorPreflight.nextNode())) {
-  //   console.log(run)
-  // }
+ 
   const elementIterator = document.createNodeIterator(
     doc.firstElementChild!,
     NodeFilter.SHOW_ELEMENT,
@@ -37,42 +28,35 @@ function createElementIterator(doc: XMLDocument) {
 
 function editPass(doc: XMLDocument) {
   const elementIterator = createElementIterator(doc);
-  // console.log(elementIterator.referenceNode);
   const src = elementIterator.nextNode() as Element;
   if (src === null) {
     console.log("done");
     return true;
   }
 
-  // const newTag =
-  //   src.tagName === "voice"
-  //     ? "div"
-  //     : src.tagName === "break"
-  //     ? "input"
-  //     : "span";
-  
   const newTag = chooseHTMLTag(src.tagName);
-  const newElt = document.createElement(newTag);
-  
+  let newElt = document.createElement(newTag);
+
   if (newElt instanceof HTMLDivElement) {
     attributeTransfer(src, newElt as HTMLDivElement);
   } else if (newElt instanceof HTMLSpanElement) {
     attributeTransfer(src, newElt as HTMLSpanElement);
   } else if (newElt instanceof HTMLInputElement) {
-      attributeTransfer(src, newElt as HTMLInputElement);
+    attributeTransfer(src, newElt as HTMLInputElement);
   }
-  
 
   const children = src.childNodes;
   newElt.append(...children);
+  
+  newElt = addNewParentage(src.tagName, newElt)
   src.replaceWith(newElt);
   return false;
 }
 
 function chooseHTMLTag(ssmlTag: string) {
   switch (ssmlTag) {
-    case SSML_TAGS.voice:
-      return HTML_TAGS.div;
+    // case SSML_TAGS.voice:
+    //   return HTML_TAGS.div;
     case SSML_TAGS.break:
       return HTML_TAGS.input;
     default:
@@ -92,7 +76,7 @@ function attributeTransfer(
   src: Element,
   target: HTMLInputElement
 ): HTMLInputElement;
-function attributeTransfer (src: Element, target: Element) {
+function attributeTransfer(src: Element, target: Element) {
   const attributes = src.attributes;
   for (const attr of attributes) {
     target.setAttribute(`ssml-${attr.name}`, attr.value);
@@ -128,6 +112,20 @@ function attributeTransfer (src: Element, target: Element) {
   return target;
 }
 
+function addNewParentage(ssmlTag: string, newElt: HTMLElement) {
+  switch (ssmlTag) {
+    case SSML_TAGS.voice:
+      const div1 = document.createElement('div');
+      div1.classList.add("voice-block")
+      const div2 = document.createElement('div');
+      div2.classList.add("block-placeholder")
+      div2.append(newElt)
+      div1.append(div2)
+      return div1
+    default:
+      return newElt;
+  }
+}
 const HTML_TAGS = {
   div: "div",
   span: "span",
