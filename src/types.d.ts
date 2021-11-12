@@ -31,3 +31,5 @@
 type RGBAColorStrings = {
   [index: string]: string;
 }
+
+type FlaggedForSplice = HTMLElement & { replaceMeWith: HTMLElement };

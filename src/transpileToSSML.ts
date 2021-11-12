@@ -1,19 +1,28 @@
-export function transpileToSSML(src: Element) {
+export function transpileToSSML(src: HTMLElement): XMLDocument {
   let done = false;
   while (!done) {
     done = editPass(src);
   }
-  
-  const doc = document.implementation.createDocument("http://www.w3.org/2001/10/synthesis", "speak", null)
+  done = false;
+  while (!done) {
+    done = removeInvasiveNewlines(src);
+  }
+
+  const doc = document.implementation.createDocument(
+    "http://www.w3.org/2001/10/synthesis",
+    "speak",
+    null
+  );
   let rootSpeak = doc.firstElementChild!;
-   rootSpeak.setAttribute("version", "1.0");
-   rootSpeak.setAttribute("xmlns", "http://www.w3.org/2001/10/synthesis");
-   rootSpeak.setAttribute("xmlns:mstts", "http://www.w3.org/2001/mstts");
-   rootSpeak.setAttribute("xmlns:emo", "http://www.w3.org/2009/10/emotionml");
+  rootSpeak.setAttribute("version", "1.0");
+  // rootSpeak.setAttribute("xmlns", "http://www.w3.org/2001/10/synthesis");
+  rootSpeak.setAttribute("xmlns:mstts", "http://www.w3.org/2001/mstts");
+  // rootSpeak.setAttribute("xmlns:emo", "http://www.w3.org/2009/10/emotionml");
   rootSpeak.setAttribute("xml:lang", "en-US");
-  console.log(...src.childNodes)
-   rootSpeak.append(...src.childNodes);
-  return doc
+  rootSpeak.append(...src.childNodes);
+  console.dir(doc.childNodes[0].childNodes[0]);
+
+  return doc;
 }
 
 function createElementIterator(root: Element) {
@@ -26,7 +35,8 @@ function createElementIterator(root: Element) {
             Object.values(SSML_TAGS).includes(classString) ||
             Object.values(MSTTS_PREFIXED_TAGS).includes("mstts:" + classString)
           );
-        })
+        }) ||
+        node.hasAttribute("removal-flag")
       ) {
         return NodeFilter.FILTER_ACCEPT;
       } else return NodeFilter.FILTER_SKIP;
@@ -39,13 +49,38 @@ function createElementIterator(root: Element) {
   );
   return elementIterator;
 }
+function removeInvasiveNewlines(root: Element) {
+  const nodeFilter = {
+    acceptNode: function (node: Text) {
+      if (node.nodeValue === null || node.nodeValue?.trim().length === 0) {
+        return NodeFilter.FILTER_ACCEPT;
+      } else return NodeFilter.FILTER_SKIP;
+    },
+  };
+  let textNodeIterator = document.createNodeIterator(
+    root,
+    NodeFilter.SHOW_TEXT,
+    nodeFilter
+  );
 
-function editPass(root: Element) {
-  const elementIterator = createElementIterator(root);
-  const src = elementIterator.nextNode() as Element;
+  let src = textNodeIterator.nextNode() as Text;
   if (src === null) {
     return true;
   }
+
+  src.remove();
+  return false;
+}
+
+function editPass(root: HTMLElement) {
+  const elementIterator = createElementIterator(root);
+  const src = elementIterator.nextNode() as HTMLElement;
+  if (src === null) {
+    return true;
+  }
+  // if this is "added HTML" then we should splice to adjust the tree now and attempt no SSML transpilation
+  const disassemblyRequired = disassemblyPhase(src);
+  if (disassemblyRequired) return false;
 
   let newTag = [...src.classList].find((classString) => {
     return (
@@ -57,11 +92,18 @@ function editPass(root: Element) {
     throw new Error("Could not derive SSML tag from an HTMLElement classlist!");
   }
   newTag = prefixIfNeeded(newTag);
-
-  const newElt = document.createElementNS("http://www.w3.org/2001/10/synthesis", newTag!);
+  let newElt;
+  if (Object.values(MSTTS_PREFIXED_TAGS).includes(newTag)) {
+    newElt = document.createElementNS("http://www.w3.org/2001/mstts", newTag);
+  } else {
+    newElt = document.createElementNS(
+      "http://www.w3.org/2001/10/synthesis",
+      newTag
+    );
+  }
 
   attributeTransfer(src, newElt);
-
+  // filter out invasive \n text nodes
   const children = src.childNodes;
   newElt.append(...children);
   src.replaceWith(newElt);
@@ -81,12 +123,6 @@ function attributeTransfer(src: Element, target: Element) {
     return attr.name.startsWith("ssml-");
   });
 
-  // switch (ssmlTag) {
-  //   case "voice":
-  //     filtered = [...attributes].filter(voiceAttrFilterCb);
-  //     break;
-  // }
-
   if (!filtered) {
     throw new Error(`no attributes found while populating <${ssmlTag}>`);
   }
@@ -95,22 +131,20 @@ function attributeTransfer(src: Element, target: Element) {
   });
 }
 
-// ATTR FILTER CALLBACKS
-// function voiceAttrFilterCb(attr: Attr) {
-//   return ["name"].includes(attr.name);
-// }
+function disassemblyPhase(elt: HTMLElement) {
+  const flag = elt.getAttribute("removal-flag");
+  if (!flag) return false;
 
-// ATTR LIST CONSTANTS
-// const SSML_ATTRS = {
-//   VOICE: [
-//       "name"
-//   ],
-//   EXPRESS_AS: [
-//     "style",
-
-//   ]
-
-// }
+  switch (flag) {
+    case SSML_TAGS.voice:
+      const target = elt.querySelector(".voice");
+      target?.remove();
+      elt.replaceWith(target!);
+      return true;
+    default:
+      return false;
+  }
+}
 
 // SSML TAG CONSTANTS
 
@@ -128,7 +162,7 @@ export const SSML_TAGS = {
   sayAs: "say-as",
   audio: "audio",
   sub: "sub",
-  break: "break"
+  break: "break",
 };
 
 export const MSTTS_PREFIXED_TAGS = {

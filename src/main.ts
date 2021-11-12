@@ -2,9 +2,12 @@ import { transpileToHTML } from "./transpileToHTML.js";
 import { transpileToSSML } from "./transpileToSSML.js";
 import { mountEditableSSML } from "./domMutations.js";
 
-const OPEN_SPEAK_TAG = `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">`;
+const OPEN_SPEAK_TAG = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="en-US">`;
+// xmlns: emo = "http://www.w3.org/2009/10/emotionml";
 const CLOSING_SPEAK_TAG = "</speak>";
 
+
+// xmlns: emo = "http://www.w3.org/2009/10/emotionml";
 // REPRESENTS DATA FROM BACKEND, TEXT WITH SOME SSML DONE
 
 const ssml = `<voice name="en-US-AriaNeural"><mstts:express-as style="Cheerful">"That’s remarkable! You’re a genius!"</mstts:express-as>Mom said to her son.</voice><voice name="en-US-JennyNeural">Customize output by <prosody rate="-40.00%"> slowing-down the speed rate.</prosody></voice><voice name="en-US-GuyNeural" ><prosody volume="+40.00%">Add a break <break time="600ms" /> between words.</prosody></voice><voice name="en-GB-SoniaNeural">You can pronounce it <say-as interpret-as="spell">ASAP </say-as>or <sub alias="as soon as possible">ASAP</sub>.</voice>`;
@@ -39,15 +42,16 @@ applyClickListener();
 
 const button = document.querySelector("#print-ssml");
 button?.addEventListener("click", () => {
-  const speakTree = document.querySelector("#toHTML");
+  const speakTree = document.getElementById("toHTML");
   let derivedSSMLDoc;
-  if (speakTree instanceof Element) {
-    derivedSSMLDoc = transpileToSSML(speakTree.cloneNode(true) as Element);
+  if (speakTree instanceof HTMLElement) {
+    console.log(speakTree)
+    console.log(speakTree.cloneNode(true))
+    derivedSSMLDoc = transpileToSSML(speakTree.cloneNode(true) as HTMLElement);
   } else {
     throw new Error("something went wrong");
   }
-  console.log("proof");
-  // console.log(ssmlDocProof);
+  
   console.log("copy");
   console.dir(derivedSSMLDoc);
   // let ssmlString = OPEN_SPEAK_TAG

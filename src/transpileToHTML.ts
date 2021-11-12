@@ -5,29 +5,33 @@ export function transpileToHTML(doc: Document): DocumentFragment {
   while (!done) {
     done = editPass(doc);
   }
-  return returnAsFragment(doc)
+  return returnAsFragment(doc);
 }
 
 function returnAsFragment(doc: Document): DocumentFragment {
-    if (doc.firstElementChild?.childNodes) {
-      const fragment = new DocumentFragment();
-      fragment.append(...doc.firstElementChild.childNodes);
-      return fragment;
-    } else {
-      throw new Error("Empty HTML document from SSML input");
-    }
+  if (doc.firstElementChild?.childNodes) {
+    const fragment = new DocumentFragment();
+    fragment.append(...doc.firstElementChild.childNodes);
+    return fragment;
+  } else {
+    throw new Error("Empty HTML document from SSML input");
+  }
 }
 
 function createElementIterator(doc: Document) {
   const nodeFilter = {
     acceptNode: function (node: Node) {
       // if Element is not an HTML tag...
-      if (!Object.values(HTML_TAGS).includes((node as Element)?.tagName.toLowerCase())) {
+      if (
+        !Object.values(HTML_TAGS).includes(
+          (node as Element)?.tagName.toLowerCase()
+        )
+      ) {
         return NodeFilter.FILTER_ACCEPT;
       } else return NodeFilter.FILTER_SKIP;
     },
   };
- 
+
   const elementIterator = document.createNodeIterator(
     doc.firstElementChild!,
     NodeFilter.SHOW_ELEMENT,
@@ -39,7 +43,7 @@ function createElementIterator(doc: Document) {
 function editPass(doc: Document) {
   const elementIterator = createElementIterator(doc);
   const src = elementIterator.nextNode() as Element;
- 
+
   if (!src) {
     return true;
   }
@@ -57,8 +61,8 @@ function editPass(doc: Document) {
 
   const children = src.childNodes;
   newElt.append(...children);
-  
-  newElt = addNewParentage(src.tagName, newElt)
+
+  newElt = addNewParentage(src.tagName, newElt);
   src.replaceWith(newElt);
   return false;
 }
@@ -125,13 +129,14 @@ function attributeTransfer(src: Element, target: Element) {
 function addNewParentage(ssmlTag: string, newElt: HTMLElement) {
   switch (ssmlTag) {
     case SSML_TAGS.voice:
-      const div1 = document.createElement('div');
-      div1.classList.add("voice-block")
-      const div2 = document.createElement('div');
-      div2.classList.add("block-placeholder")
-      div2.append(newElt)
-      div1.append(div2)
-      return div1
+      const div1 = document.createElement("div");
+      div1.classList.add("voice-block");
+      div1.setAttribute("removal-flag", SSML_TAGS.voice);
+      const div2 = document.createElement("div");
+      div2.classList.add("block-placeholder");
+      div2.append(newElt);
+      div1.append(div2);
+      return div1;
     default:
       return newElt;
   }
