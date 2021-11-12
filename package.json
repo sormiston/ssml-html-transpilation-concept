@@ -7,23 +7,23 @@
     "sass": "ttab -a iTerm2 -t 'ssml-editor-sass-watch' sass src/sass/styles.scss dist/styles/styles.css --watch",
     "tsc": "ttab -a iTerm2 -t 'ssml-editor-tsc' tsc -w",
     "serve": "ttab -a iTerm2 -t 'ssml-edit-dev-server' live-server",
-    "start": "run-s tsc sass serve"
+    "start": "run-s tsc sass serve",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/jest": "^27.0.2",
     "npm-run-all": "^4.1.5",
     "ttab": "^0.7.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
-    "@types/babel__traverse": "^7.14.2",
-    "@types/node": "^16.11.7",
-    "babel-jest": "^27.3.1",
-    "jest": "^27.3.1"
+    "@types/jest": "^27.0.2",
+    "jest": "^27.3.1",
+    "jest-ts-webcompat-resolver": "^1.0.0",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.4.4"
   }
 }

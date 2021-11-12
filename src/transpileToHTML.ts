@@ -1,18 +1,28 @@
 import { SSML_TAGS } from "./transpileToSSML.js";
 
-export function transpileToHTML(doc: XMLDocument) {
+export function transpileToHTML(doc: Document): DocumentFragment {
   let done = false;
   while (!done) {
     done = editPass(doc);
   }
-  return doc;
+  return returnAsFragment(doc)
 }
 
-function createElementIterator(doc: XMLDocument) {
+function returnAsFragment(doc: Document): DocumentFragment {
+    if (doc.firstElementChild?.childNodes) {
+      const fragment = new DocumentFragment();
+      fragment.append(...doc.firstElementChild.childNodes);
+      return fragment;
+    } else {
+      throw new Error("Empty HTML document from SSML input");
+    }
+}
+
+function createElementIterator(doc: Document) {
   const nodeFilter = {
     acceptNode: function (node: Node) {
       // if Element is not an HTML tag...
-      if (!Object.values(HTML_TAGS).includes((node as Element)?.tagName)) {
+      if (!Object.values(HTML_TAGS).includes((node as Element)?.tagName.toLowerCase())) {
         return NodeFilter.FILTER_ACCEPT;
       } else return NodeFilter.FILTER_SKIP;
     },
@@ -26,11 +36,11 @@ function createElementIterator(doc: XMLDocument) {
   return elementIterator;
 }
 
-function editPass(doc: XMLDocument) {
+function editPass(doc: Document) {
   const elementIterator = createElementIterator(doc);
   const src = elementIterator.nextNode() as Element;
-  if (src === null) {
-    console.log("done");
+ 
+  if (!src) {
     return true;
   }
 

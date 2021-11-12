@@ -10,7 +10,8 @@ export function transpileToSSML(src: Element) {
    rootSpeak.setAttribute("xmlns", "http://www.w3.org/2001/10/synthesis");
    rootSpeak.setAttribute("xmlns:mstts", "http://www.w3.org/2001/mstts");
    rootSpeak.setAttribute("xmlns:emo", "http://www.w3.org/2009/10/emotionml");
-   rootSpeak.setAttribute("xml:lang", "en-US");
+  rootSpeak.setAttribute("xml:lang", "en-US");
+  console.log(...src.childNodes)
    rootSpeak.append(...src.childNodes);
   return doc
 }
@@ -43,7 +44,6 @@ function editPass(root: Element) {
   const elementIterator = createElementIterator(root);
   const src = elementIterator.nextNode() as Element;
   if (src === null) {
-    console.log("to SSML: done");
     return true;
   }
 
