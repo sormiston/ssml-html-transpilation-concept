@@ -1,4 +1,4 @@
-
+import { SSML_TAGS, MSTTS_PREFIXED_TAGS } from "./constants.js"
 let doc: XMLDocument;
 
 export function transpileToSSML(
@@ -27,10 +27,10 @@ export function transpileToSSML(
   while (!done) {
     done = editPass(src);
   }
-  done = false;
-  while (!done) {
-    done = removeInvasiveNewlines(src);
-  }
+  // done = false;
+  // while (!done) {
+  //   done = removeInvasiveNewlines(src);
+  // }
 
   // rootSpeak.setAttribute("version", "1.0");
   // rootSpeak.setAttribute("xmlns", "http://www.w3.org/2001/10/synthesis");
@@ -38,7 +38,7 @@ export function transpileToSSML(
   // rootSpeak.setAttribute("xmlns:emo", "http://www.w3.org/2009/10/emotionml");
   // rootSpeak.setAttribute("xml:lang", "en-US");
   rootSpeak.append(...src.childNodes);
-  console.dir(doc.documentElement.childNodes);
+  // console.dir(doc.documentElement.childNodes);
   return doc;
 }
 
@@ -66,28 +66,28 @@ function createElementIterator(root: Element) {
   );
   return elementIterator;
 }
-function removeInvasiveNewlines(root: Element) {
-  const nodeFilter = {
-    acceptNode: function (node: Text) {
-      if (node.nodeValue === null || node.nodeValue?.trim().length === 0) {
-        return NodeFilter.FILTER_ACCEPT;
-      } else return NodeFilter.FILTER_SKIP;
-    },
-  };
-  let textNodeIterator = document.createNodeIterator(
-    root,
-    NodeFilter.SHOW_TEXT,
-    nodeFilter
-  );
+// function textConvertor(root: Element) {
+//   const nodeFilter = {
+//     acceptNode: function (node: Text) {
+//       if (node.nodeValue === null || node.nodeValue?.trim().length === 0) {
+//         return NodeFilter.FILTER_ACCEPT;
+//       } else return NodeFilter.FILTER_SKIP;
+//     },
+//   };
+//   let textNodeIterator = document.createNodeIterator(
+//     root,
+//     NodeFilter.SHOW_TEXT,
+//     nodeFilter
+//   );
 
-  let src = textNodeIterator.nextNode() as Text;
-  if (src === null) {
-    return true;
-  }
+//   let src = textNodeIterator.nextNode() as Text;
+//   if (src === null) {
+//     return true;
+//   }
 
-  src.remove();
-  return false;
-}
+//   src.remove();
+//   return false;
+// }
 
 function editPass(root: HTMLElement) {
   const elementIterator = createElementIterator(root);
@@ -96,7 +96,7 @@ function editPass(root: HTMLElement) {
     return true;
   }
   // if this is "added HTML" then we should splice to adjust the tree now and attempt no SSML transpilation
-  const disassemblyRequired = disassemblyPhase(src);
+  const disassemblyRequired = disassemble(src);
   if (disassemblyRequired) return false;
 
   let newTag = [...src.classList].find((classString) => {
@@ -145,7 +145,7 @@ function attributeTransfer(src: Element, target: Element) {
   });
 }
 
-function disassemblyPhase(elt: HTMLElement) {
+function disassemble(elt: HTMLElement) {
   const flag = elt.getAttribute("removal-flag");
   if (!flag) return false;
 
@@ -155,32 +155,13 @@ function disassemblyPhase(elt: HTMLElement) {
       target?.remove();
       elt.replaceWith(target!);
       return true;
+    case "text-node":
+      const tNode = elt.firstChild
+      tNode?.remove()
+      elt.replaceWith(tNode as Node)
+      return true;
     default:
       return false;
   }
 }
 
-// SSML TAG CONSTANTS
-
-export const SSML_TAGS = {
-  voice: "voice",
-  lang: "lang",
-  p: "p",
-  s: "s",
-  phoneme: "phoneme",
-  lexicon: "lexicon",
-  lexeme: "lexeme",
-  grapheme: "grapheme",
-  alias: "alias",
-  prosody: "prosody",
-  sayAs: "say-as",
-  audio: "audio",
-  sub: "sub",
-  break: "break",
-};
-
-export const MSTTS_PREFIXED_TAGS = {
-  expressAs: "mstts:express-as",
-  silence: "mstts:silence",
-  backgroundAudio: "mstts:backgroundaudio",
-};

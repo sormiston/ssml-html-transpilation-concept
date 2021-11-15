@@ -1,11 +1,15 @@
-import { SSML_TAGS } from "./transpileToSSML.js";
+import { SSML_TAGS } from "./constants.js";
 
 export function transpileToHTML(doc: Document): DocumentFragment {
   let done = false;
   while (!done) {
     done = editPass(doc);
   }
-  return returnAsFragment(doc);
+  
+  const docFragment = returnAsFragment(doc)
+  // console.log("compiled HTML");
+  // console.log(docFragment)
+  return docFragment;
 }
 
 function returnAsFragment(doc: Document): DocumentFragment {
@@ -16,6 +20,34 @@ function returnAsFragment(doc: Document): DocumentFragment {
   } else {
     throw new Error("Empty HTML document from SSML input");
   }
+}
+
+function wrapLooseTextChildren(childNodes: NodeListOf<ChildNode>) {
+  // const nodeFilter = {
+  //   acceptNode: function (node: Text) {
+  //     if (node.parentElement) {
+  //       return NodeFilter.FILTER_ACCEPT;
+  //     } else return NodeFilter.FILTER_SKIP;
+  //   },
+  // };
+  // let textNodeIterator = document.createNodeIterator(
+  //   root,
+  //   NodeFilter.SHOW_TEXT,
+  //   null
+  // );
+
+  return [...childNodes].map((cn) => {
+    if (cn instanceof Text) {
+      const span = document.createElement("span")
+      span.classList.add("text-node")
+      span.setAttribute("removal-flag", "text-node")
+      cn.remove()
+      span.append(cn)
+      return span
+    } else {
+      return cn
+    }
+  })
 }
 
 function createElementIterator(doc: Document) {
@@ -59,7 +91,7 @@ function editPass(doc: Document) {
     attributeTransfer(src, newElt as HTMLInputElement);
   }
 
-  const children = src.childNodes;
+  const children = wrapLooseTextChildren(src.childNodes);
   newElt.append(...children);
 
   newElt = addNewParentage(src.tagName, newElt);
