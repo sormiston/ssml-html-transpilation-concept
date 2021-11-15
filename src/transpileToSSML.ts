@@ -1,5 +1,29 @@
-export function transpileToSSML(src: HTMLElement): XMLDocument {
+
+let doc: XMLDocument;
+
+export function transpileToSSML(
+  src: HTMLElement,
+  rootLanguage: string = "en-US"
+): XMLDocument {
   let done = false;
+
+  doc = document.implementation.createDocument(
+    "http://www.w3.org/2001/10/synthesis",
+    "speak",
+    null
+  );
+  let rootSpeak = doc.documentElement;
+  rootSpeak.setAttribute("version", "1.0")
+  rootSpeak.setAttributeNS(
+    "http://www.w3.org/2000/xmlns/",
+    "xmlns:mstts",
+    "http://www.w3.org/2001/mstts"
+  );
+  rootSpeak.setAttribute(
+    "xml:lang",
+    rootLanguage
+  );
+
   while (!done) {
     done = editPass(src);
   }
@@ -8,20 +32,13 @@ export function transpileToSSML(src: HTMLElement): XMLDocument {
     done = removeInvasiveNewlines(src);
   }
 
-  const doc = document.implementation.createDocument(
-    "http://www.w3.org/2001/10/synthesis",
-    "speak",
-    null
-  );
-  let rootSpeak = doc.firstElementChild!;
-  rootSpeak.setAttribute("version", "1.0");
+  // rootSpeak.setAttribute("version", "1.0");
   // rootSpeak.setAttribute("xmlns", "http://www.w3.org/2001/10/synthesis");
-  rootSpeak.setAttribute("xmlns:mstts", "http://www.w3.org/2001/mstts");
+  // rootSpeak.setAttribute("xmlns:mstts", "http://www.w3.org/2001/mstts");
   // rootSpeak.setAttribute("xmlns:emo", "http://www.w3.org/2009/10/emotionml");
-  rootSpeak.setAttribute("xml:lang", "en-US");
+  // rootSpeak.setAttribute("xml:lang", "en-US");
   rootSpeak.append(...src.childNodes);
-  console.dir(doc.childNodes[0].childNodes[0]);
-
+  console.dir(doc.documentElement.childNodes);
   return doc;
 }
 
@@ -96,10 +113,7 @@ function editPass(root: HTMLElement) {
   if (Object.values(MSTTS_PREFIXED_TAGS).includes(newTag)) {
     newElt = document.createElementNS("http://www.w3.org/2001/mstts", newTag);
   } else {
-    newElt = document.createElementNS(
-      "http://www.w3.org/2001/10/synthesis",
-      newTag
-    );
+  newElt = doc.createElementNS("http://www.w3.org/2001/10/synthesis", newTag);
   }
 
   attributeTransfer(src, newElt);

@@ -61,5 +61,5 @@ button?.addEventListener("click", () => {
   // }
   // ssmlString = ssmlString + CLOSING_SPEAK_TAG
 
-  console.log(serializer.serializeToString(derivedSSMLDoc));
+  console.log(serializer.serializeToString(derivedSSMLDoc.documentElement));
 });

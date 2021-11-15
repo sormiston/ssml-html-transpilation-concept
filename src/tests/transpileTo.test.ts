@@ -9,7 +9,7 @@ const OPEN_SPEAK_TAG = `<speak xmlns="http://www.w3.org/2001/10/synthesis" versi
 
 // xmlns:emo="http://www.w3.org/2009/10/emotionml"  
 
-const ssml = `<voice name="en-US-AriaNeural"><mstts:express-as xmlns:mstts="http://www.w3.org/2001/mstts" style="Cheerful">"That’s remarkable! You’re a genius!"</mstts:express-as>Mom said to her son.</voice><voice name="en-US-JennyNeural">Customize output by <prosody rate="-40.00%"> slowing-down the speed rate.</prosody></voice><voice name="en-US-GuyNeural"><prosody volume="+40.00%">Add a break <break time="600ms"/> between words.</prosody></voice><voice name="en-GB-SoniaNeural">You can pronounce it <say-as interpret-as="spell">ASAP </say-as>or <sub alias="as soon as possible">ASAP</sub>.</voice>`;
+const ssml = `<voice name="en-US-AriaNeural"><mstts:express-as xml:mstts="http://www.w3.org/2001/mstts" style="Cheerful">"That’s remarkable! You’re a genius!"</mstts:express-as>Mom said to her son.</voice><voice name="en-US-JennyNeural">Customize output by <prosody rate="-40.00%"> slowing-down the speed rate.</prosody></voice><voice name="en-US-GuyNeural"><prosody volume="+40.00%">Add a break <break time="600ms"/> between words.</prosody></voice><voice name="en-GB-SoniaNeural">You can pronounce it <say-as interpret-as="spell">ASAP </say-as>or <sub alias="as soon as possible">ASAP</sub>.</voice>`;
 
 const CLOSING_SPEAK_TAG = "</speak>";
 
