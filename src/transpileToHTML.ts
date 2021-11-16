@@ -1,6 +1,6 @@
 import { SSML_TAGS } from "./constants.js";
 
-export function transpileToHTML(doc: Document): DocumentFragment {
+export default function transpileToHTML(doc: XMLDocument): DocumentFragment {
   let done = false;
   while (!done) {
     done = editPass(doc);

@@ -1,5 +1,5 @@
-import { transpileToHTML } from "./transpileToHTML.js";
-import { transpileToSSML } from "./transpileToSSML.js";
+import transpileToHTML from "./transpileToHTML.js";
+import transpileToSSML from "./transpileToSSML.js";
 import { mountEditableSSML } from "./domMutations.js";
 
 const OPEN_SPEAK_TAG = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="en-US">`;
@@ -11,6 +11,10 @@ const CLOSING_SPEAK_TAG = "</speak>";
 // REPRESENTS DATA FROM BACKEND, TEXT WITH SOME SSML DONE
 
 const ssml = `<voice name="en-US-AriaNeural"><mstts:express-as style="Cheerful">"That’s remarkable! You’re a genius!"</mstts:express-as>Mom said to her son.</voice><voice name="en-US-JennyNeural">Customize output by <prosody rate="-40.00%"> slowing-down the speed rate.</prosody></voice><voice name="en-US-GuyNeural" ><prosody volume="+40.00%">Add a break <break time="600ms" /> between words.</prosody></voice><voice name="en-GB-SoniaNeural">You can pronounce it <say-as interpret-as="spell">ASAP </say-as>or <sub alias="as soon as possible">ASAP</sub>.</voice>`;
+
+const rawText = `<voice name="en-US-JennyNeural">"That’s remarkable! You’re a genius!" Mom said to her son. Customize output by slowing-down the speed rate. Add a break  between words. You can pronounce it ASAP or ASAP.</voice>`;
+
+const simplestExample = `"That’s remarkable! You’re a genius!" Mom said to her son. Customize output by <prosody rate="-40.00%"> slowing-down the speed rate.</prosody> Add a break  between words. You can pronounce it ASAP or ASAP.`;
 
 // const ssml = `<voice name="en-US-JennyNeural"><prosody rate="14%" pitch="10%">You can replace this text with any text you wish. You can either write in this text box or paste your own text here.
 // Try different languages and voices. Change the speed and the pitch of the voice. You can even tweak the SSML (Speech Synthesis Markup Language) to control how the different sections of the text sound. Click on SSML above to give it a try!
@@ -29,7 +33,7 @@ let ssmlDoc: XMLDocument = parser.parseFromString(
 // );
 
 const fragment = transpileToHTML(ssmlDoc);
-
+// DEPRECATE THIS / REPLACR WITH SSMLWORKDIV
 mountEditableSSML(fragment, "#toHTML");
 const serializer = new XMLSerializer();
 
@@ -63,3 +67,16 @@ button?.addEventListener("click", () => {
 
   console.log(serializer.serializeToString(derivedSSMLDoc.documentElement));
 });
+
+
+
+// *** DEVELOP CUSTOM WORK DIV ***
+import SSMLWorkDiv from "./SSMLWorkDiv.js"
+function initWorkDiv(cssSelector: string, ssmlString: string) {
+  const anchor = document.querySelector(cssSelector);
+  if (anchor instanceof HTMLElement) {
+    new SSMLWorkDiv(anchor, ssmlString, false);
+  } else
+    throw new Error("SSMLWorkDiv initialization lacks suitable element anchor");
+}
+initWorkDiv("[ff-ID='1']", rawText)

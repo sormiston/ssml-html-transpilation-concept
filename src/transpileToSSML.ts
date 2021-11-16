@@ -1,7 +1,7 @@
 import { SSML_TAGS, MSTTS_PREFIXED_TAGS } from "./constants.js"
 let doc: XMLDocument;
 
-export function transpileToSSML(
+export default function transpileToSSML(
   src: HTMLElement,
   rootLanguage: string = "en-US"
 ): XMLDocument {

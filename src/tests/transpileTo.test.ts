@@ -1,5 +1,5 @@
-import { transpileToSSML } from "../transpileToSSML";
-import { transpileToHTML } from "../transpileToHTML";
+import transpileToSSML from "../transpileToSSML";
+import transpileToHTML from "../transpileToHTML";
 import { mountEditableSSML } from "../domMutations";
 
 // BELOW IS EXPECTED TO BE A VALID SSML STRING THAT RETURNS MEANINGFUL AUDIO FROM MICROSOFT TEXT TO SPEECH ENGINE ON AZURE.
