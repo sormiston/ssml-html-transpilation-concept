@@ -35,7 +35,7 @@ export default class SSMLWorkDiv {
       this.elt.appendChild(subtree);
     }
     this.anchorElt = anchorElt;
-    this.elt.addEventListener("selectstart", (e) => console.log(e));
+    // this.elt.addEventListener("selectstart", (e) => console.log(e));
     this.anchorElt.prepend(this.elt);
     attachSelectionListener(this);
   }
