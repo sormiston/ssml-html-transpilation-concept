@@ -45,6 +45,7 @@ function expandSelectionToWordBoundaries(range: Range) {
   }
   expandStart();
   expandEnd();
+  return range
 }
 
 export function attachSelectionListener(SSMLWorkDiv: any) {
@@ -62,7 +63,8 @@ export function attachSelectionListener(SSMLWorkDiv: any) {
   function holdSelection() {
     const sel = document.getSelection();
     if (sel) {
-      expandSelectionToWordBoundaries(sel.getRangeAt(0));
-    }
+      const adjustedRange = expandSelectionToWordBoundaries(sel.getRangeAt(0));
+      SSMLWorkDiv.currentRange = adjustedRange;
+    } 
   }
 }

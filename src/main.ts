@@ -14,7 +14,7 @@ const ssml = `<voice name="en-US-AriaNeural"><mstts:express-as style="Cheerful">
 
 const rawText = `<voice name="en-US-JennyNeural">"That’s remarkable! You’re a genius!" Mom said to her son. Customize output by slowing-down the speed rate. Add a break  between words. You can pronounce it ASAP or ASAP.</voice>`;
 
-const simplestExample = `"That’s remarkable! You’re a genius!" Mom said to her son. Customize output by <prosody rate="-40.00%"> slowing-down the speed rate.</prosody> Add a break  between words. You can pronounce it ASAP or ASAP.`;
+const simplestExample = `<voice name="en-US-JennyNeural">"That’s remarkable! You’re a genius!" Mom said to her son. Customize output by <prosody rate="-40.00%"> slowing-down the speed rate.</prosody> Add a break  between words. You can pronounce it ASAP or ASAP.</voice>`;
 
 // const ssml = `<voice name="en-US-JennyNeural"><prosody rate="14%" pitch="10%">You can replace this text with any text you wish. You can either write in this text box or paste your own text here.
 // Try different languages and voices. Change the speed and the pitch of the voice. You can even tweak the SSML (Speech Synthesis Markup Language) to control how the different sections of the text sound. Click on SSML above to give it a try!

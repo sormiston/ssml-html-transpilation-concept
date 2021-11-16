@@ -9,13 +9,17 @@
 .row {
   margin-bottom: 30px;
 }
-.ff-entry,
+
 .ssml-edit-div { 
   // padding: 6px 6px 20px 20px;
   min-height: 300px;
   border: 1px solid blue;
   line-height: 36px;
-  
+
+.selection-placeholder {
+  background-color: blue;
+  color: white;
+}
   .voice-block {
     padding-left: 6rem;
     :not(&:last-child) {
