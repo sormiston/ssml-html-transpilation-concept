@@ -7,7 +7,7 @@ const parser = new DOMParser();
 const serializer = new XMLSerializer();
 
 export default class SSMLWorkDiv {
-  public static OPEN_SPEAK_TAG = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="en-US">`;
+  public static OPEN_SPEAK_TAG = `<speak xmlns="http://www.w3.org/2001/10/synthesis" version="1.0" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="en-US">`;
   public static CLOSE_SPEAK_TAG = `</speak>`;
 
   private _currentRanges: Range[] | null = null;
@@ -118,5 +118,12 @@ export default class SSMLWorkDiv {
       this.applySelectionToRange(range);
     }
     // console.log(this._currentRanges);
+  }
+
+  // INTERFACE METHODS
+  emitSSMLString(headless: boolean) {
+    const derivedSSMLDoc = transpileToSSML(this.elt);
+    const reserialized = serializer.serializeToString(derivedSSMLDoc);
+    return reserialized;
   }
 }

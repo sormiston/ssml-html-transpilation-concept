@@ -81,4 +81,4 @@ function initWorkDiv(cssSelector: string, ssmlString: string) {
   } else
     throw new Error("SSMLWorkDiv initialization lacks suitable element anchor");
 }
-initWorkDiv("[ff-ID='1']", simplestExample)
+initWorkDiv("[ff-ID='1']", ssml)// simplestExample

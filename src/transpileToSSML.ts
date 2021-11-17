@@ -27,18 +27,7 @@ export default function transpileToSSML(
   while (!done) {
     done = editPass(src);
   }
-  // done = false;
-  // while (!done) {
-  //   done = removeInvasiveNewlines(src);
-  // }
-
-  // rootSpeak.setAttribute("version", "1.0");
-  // rootSpeak.setAttribute("xmlns", "http://www.w3.org/2001/10/synthesis");
-  // rootSpeak.setAttribute("xmlns:mstts", "http://www.w3.org/2001/mstts");
-  // rootSpeak.setAttribute("xmlns:emo", "http://www.w3.org/2009/10/emotionml");
-  // rootSpeak.setAttribute("xml:lang", "en-US");
   rootSpeak.append(...src.childNodes);
-  // console.dir(doc.documentElement.childNodes);
   return doc;
 }
 
@@ -66,28 +55,6 @@ function createElementIterator(root: Element) {
   );
   return elementIterator;
 }
-// function textConvertor(root: Element) {
-//   const nodeFilter = {
-//     acceptNode: function (node: Text) {
-//       if (node.nodeValue === null || node.nodeValue?.trim().length === 0) {
-//         return NodeFilter.FILTER_ACCEPT;
-//       } else return NodeFilter.FILTER_SKIP;
-//     },
-//   };
-//   let textNodeIterator = document.createNodeIterator(
-//     root,
-//     NodeFilter.SHOW_TEXT,
-//     nodeFilter
-//   );
-
-//   let src = textNodeIterator.nextNode() as Text;
-//   if (src === null) {
-//     return true;
-//   }
-
-//   src.remove();
-//   return false;
-// }
 
 function editPass(root: HTMLElement) {
   const elementIterator = createElementIterator(root);
