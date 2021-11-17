@@ -39,8 +39,10 @@ const serializer = new XMLSerializer();
 
 // DEMO STUFF -- EVENT LISTENING?
 function applyClickListener() {
-  const div = document.querySelector("#toHTML");
-  div?.addEventListener("click", (e) => console.log(e.target));
+  const div1 = document.querySelector("#toHTML");
+  div1?.addEventListener("click", (e) => console.log(e.target));
+  const div2 = document.querySelector("[ff-ID='1']");
+  div2?.addEventListener("click", (e) => console.log(e.target));
 }
 applyClickListener();
 

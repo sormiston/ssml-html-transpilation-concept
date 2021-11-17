@@ -23,6 +23,3 @@ export const MSTTS_PREFIXED_TAGS = {
   backgroundAudio: "mstts:backgroundaudio",
 };
 
-export const BLOCK_LEVEL_SSML_TAGS = {
-  voice: "voice"
-}
