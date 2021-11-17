@@ -10,24 +10,25 @@
   margin-bottom: 30px;
 }
 
-.ssml-edit-div { 
+.ssml-edit-div {
   // padding: 6px 6px 20px 20px;
   min-height: 300px;
   border: 1px solid blue;
   line-height: 36px;
 
-.selection-placeholder {
-  background-color: blue;
-  color: white;
-}
+  .selection-placeholder {
+    background-color: blue;
+    color: white;
+    display: inline-block;
+  }
   .voice-block {
     padding-left: 6rem;
-    :not(&:last-child) {
-      margin-bottom: 1rem;
-    }
+    // :not(&:last-child) {
+    //   margin-bottom: 1rem;
+    // }
   }
- }
- 
+}
+
 .voice {
   line-height: 30px;
 }
@@ -54,19 +55,17 @@
 
 /* Prosody (monolithic) */
 .prosody {
-  border-bottom:rgba(102, 102, 255, 1);
+  border-bottom: rgba(102, 102, 255, 1);
   border-bottom-width: 2px;
   border-bottom-style: solid;
   padding-bottom: 6px;
 }
 
 /* Pronunciation */
-.say-as, .sub {
-  border-bottom:rgba(251, 102, 103, 1);
+.say-as,
+.sub {
+  border-bottom: rgba(251, 102, 103, 1);
   border-bottom-width: 2px;
   border-bottom-style: solid;
   padding-bottom: 6px;
 }
-
-
-

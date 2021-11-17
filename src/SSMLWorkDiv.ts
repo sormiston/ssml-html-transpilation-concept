@@ -10,7 +10,7 @@ export default class SSMLWorkDiv {
   public static OPEN_SPEAK_TAG = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="en-US">`;
   public static CLOSE_SPEAK_TAG = `</speak>`;
 
-  _currentRange: Range | null = null;
+  _currentRanges: Range[] | null = null;
 
   elt = document.createElement("div");
   anchorElt: HTMLElement;
@@ -47,7 +47,12 @@ export default class SSMLWorkDiv {
     selectionHolder.classList.add("selection-placeholder");
     range.surroundContents(selectionHolder);
   }
-  set currentRange(range: Range | null) {
+  removeSelectionHolders() { }
+  
+  set currentRanges(range: Range | null) {
+    if (this._currentRanges !== null) {
+      this.removeSelectionHolders()
+    }
     // IF RANGE ENCOMPASSES MULTIPLE TEXT NODES 
     if (range && range.commonAncestorContainer instanceof HTMLElement) {
       const rangeMap = getRangeMap(
@@ -69,6 +74,7 @@ export default class SSMLWorkDiv {
 
       this.applySelectionToRange(endRange);
 
+      let middleRanges: Range[] = []
       if (Reflect.ownKeys(rangeMap).length > 2) {
         const middleRangeKeys = Reflect.ownKeys(rangeMap).filter(
           (k, i, arr) => {
@@ -81,14 +87,18 @@ export default class SSMLWorkDiv {
           range.selectNodeContents(targetTNode);
 
           this.applySelectionToRange(range);
+          middleRanges.push(range)
         }, this);
       }
+      this._currentRanges = [headRange, ...middleRanges, endRange]
+      console.log(this._currentRanges)
       // SIMPLER CASE, SELECTION WITHIN SINGLE TEXT NODE
     } else if (range) {
-      this._currentRange = range;
+      this._currentRanges = [range];
       const selectionHolder = document.createElement("span");
       selectionHolder.classList.add("selection-placeholder");
       range.surroundContents(selectionHolder);
+      console.log(this._currentRanges)
     }
   }
 }
