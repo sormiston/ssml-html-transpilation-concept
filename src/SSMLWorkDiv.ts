@@ -10,7 +10,9 @@ export default class SSMLWorkDiv {
   public static OPEN_SPEAK_TAG = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="en-US">`;
   public static CLOSE_SPEAK_TAG = `</speak>`;
 
-  _currentRanges: Range[] | null = null;
+  private _currentRanges: Range[] | null = null;
+  private _currentRangePlaceholders: WeakMap<Range, HTMLSpanElement> =
+    new WeakMap();
 
   elt = document.createElement("div");
   anchorElt: HTMLElement;
@@ -46,14 +48,33 @@ export default class SSMLWorkDiv {
     const selectionHolder = document.createElement("span");
     selectionHolder.classList.add("selection-placeholder");
     range.surroundContents(selectionHolder);
+    this._currentRangePlaceholders.set(range, selectionHolder);
+    // console.log(
+    //   "placeholder from weakmap: ",
+    //   this._currentRangePlaceholders.get(range)
+    // );
   }
-  removeSelectionHolders() { }
-  
+  removeSelectionHolders() {
+    if (this._currentRanges) {
+      this._currentRanges.forEach((range) => {
+        const placeholder = this._currentRangePlaceholders.get(range);
+        if (!(placeholder instanceof HTMLSpanElement)) return;
+        const parent = placeholder.parentElement as HTMLElement;
+        placeholder.replaceWith(placeholder.firstChild!);
+        parent.normalize();
+
+        this._currentRangePlaceholders.delete(range);
+        // console.log(this._currentRangePlaceholders.get(range));
+      });
+    }
+    this._currentRanges = null;
+  }
+
   set currentRanges(range: Range | null) {
     if (this._currentRanges !== null) {
-      this.removeSelectionHolders()
+      this.removeSelectionHolders();
     }
-    // IF RANGE ENCOMPASSES MULTIPLE TEXT NODES 
+    // IF RANGE ENCOMPASSES MULTIPLE TEXT NODES
     if (range && range.commonAncestorContainer instanceof HTMLElement) {
       const rangeMap = getRangeMap(
         range.toString(),
@@ -74,7 +95,7 @@ export default class SSMLWorkDiv {
 
       this.applySelectionToRange(endRange);
 
-      let middleRanges: Range[] = []
+      let middleRanges: Range[] = [];
       if (Reflect.ownKeys(rangeMap).length > 2) {
         const middleRangeKeys = Reflect.ownKeys(rangeMap).filter(
           (k, i, arr) => {
@@ -87,18 +108,15 @@ export default class SSMLWorkDiv {
           range.selectNodeContents(targetTNode);
 
           this.applySelectionToRange(range);
-          middleRanges.push(range)
+          middleRanges.push(range);
         }, this);
       }
-      this._currentRanges = [headRange, ...middleRanges, endRange]
-      console.log(this._currentRanges)
+      this._currentRanges = [headRange, ...middleRanges, endRange];
       // SIMPLER CASE, SELECTION WITHIN SINGLE TEXT NODE
     } else if (range) {
       this._currentRanges = [range];
-      const selectionHolder = document.createElement("span");
-      selectionHolder.classList.add("selection-placeholder");
-      range.surroundContents(selectionHolder);
-      console.log(this._currentRanges)
+      this.applySelectionToRange(range);
     }
+    // console.log(this._currentRanges);
   }
 }

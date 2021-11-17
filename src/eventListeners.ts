@@ -53,19 +53,20 @@ export function attachSelectionListener(SSMLWorkDiv: any) {
   elt.addEventListener("selectstart", handleSelectionChange);
 
   function handleSelectionChange() {
-    elt.addEventListener("mouseup", holdSelection);
-    elt.addEventListener("keyup", holdSelection);
+    elt.addEventListener("mouseup", handleSelection);
+    elt.addEventListener("keyup", handleSelection);
   }
 
-  elt.removeEventListener("mouseup", holdSelection);
-  elt.removeEventListener("keyup", holdSelection);
-
-  function holdSelection() {
+  function handleSelection() {
+    SSMLWorkDiv.removeSelectionHolders();
     const sel = document.getSelection();
     if (sel) {
       if (sel.isCollapsed) return;
       const adjustedRanges = expandSelectionToWordBoundaries(sel.getRangeAt(0));
       SSMLWorkDiv.currentRanges = adjustedRanges;
+      sel.removeAllRanges();
     }
+    elt.removeEventListener("mouseup", handleSelection);
+    elt.removeEventListener("keyup", handleSelection);
   }
 }
