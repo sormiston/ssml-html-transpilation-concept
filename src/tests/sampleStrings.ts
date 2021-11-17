@@ -1,0 +1,7 @@
+const sampleStrings = {
+  standard: `<voice name="en-US-AriaNeural"><mstts:express-as xml:mstts="http://www.w3.org/2001/mstts" style="Cheerful">"That’s remarkable! You’re a genius!"</mstts:express-as>Mom said to her son.</voice><voice name="en-US-JennyNeural">Customize output by <prosody rate="-40.00%"> slowing-down the speed rate.</prosody></voice><voice name="en-US-GuyNeural"><prosody volume="+40.00%">Add a break <break time="600ms"/> between words.</prosody></voice><voice name="en-GB-SoniaNeural"><prosody pitch="-30.00%">You can pronounce it </prosody><prosody rate="+100.00%" pitch="-30.00%"><say-as interpret-as="spell">ASAP </say-as></prosody><prosody pitch="-30.00%">or <sub alias="as soon as possible">ASAP</sub>.</prosody></voice>`,
+  unedited: `<voice name="en-US-JennyNeural">"That’s remarkable! You’re a genius!" Mom said to her son. Customize output by slowing-down the speed rate. Add a break  between words. You can pronounce it ASAP or ASAP.</voice>`,
+  "1tag": `<voice name="en-US-JennyNeural">"That’s remarkable! You’re a genius!" Mom said to her son. Customize output by slowing-down the speed rate. Add a break  between words. You can pronounce it ASAP or ASAP.</voice>`
+};
+
+export default sampleStrings

@@ -70,3 +70,7 @@ export function attachSelectionListener(SSMLWorkDiv: any) {
     elt.removeEventListener("keyup", handleSelection);
   }
 }
+
+export function attachHoverListener(SSMLWorkDiv: any) {
+  
+}

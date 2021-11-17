@@ -119,6 +119,11 @@ export default class SSMLWorkDiv {
     }
     // console.log(this._currentRanges);
   }
+  
+  collectRegionalSSMLData() {
+    // if a textNode, climb the tree and collect
+    // if an element with SSML data, collect this the data + climb and collect
+  }
 
   // INTERFACE METHODS
   emitSSMLString(headless: boolean) {

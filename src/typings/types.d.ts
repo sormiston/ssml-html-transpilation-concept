@@ -29,3 +29,5 @@ type Partition = {
 };
 
 type FlaggedForSplice = HTMLElement & { replaceMeWith: HTMLElement };
+
+// type what SSMLWorkDiv should report
