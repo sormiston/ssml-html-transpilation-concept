@@ -22,4 +22,3 @@ export const MSTTS_PREFIXED_TAGS = {
   silence: "mstts:silence",
   backgroundAudio: "mstts:backgroundaudio",
 };
-

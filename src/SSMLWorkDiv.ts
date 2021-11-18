@@ -1,7 +1,7 @@
 import transpileToHTML from "./transpileToHTML.js";
 import transpileToSSML from "./transpileToSSML.js";
 import { getRangeMap } from "./correlationEngine.js";
-import { attachSelectionListener } from "./eventListeners.js";
+import { attachHoverListener, attachSelectionListener } from "./eventListeners.js";
 
 const parser = new DOMParser();
 const serializer = new XMLSerializer();
@@ -43,6 +43,7 @@ export default class SSMLWorkDiv {
     // this.elt.addEventListener("selectstart", (e) => console.log(e));
     this.anchorElt.prepend(this.elt);
     attachSelectionListener(this);
+    attachHoverListener(this)
   }
   applySelectionToRange(range: Range) {
     const selectionHolder = document.createElement("span");
@@ -121,6 +122,7 @@ export default class SSMLWorkDiv {
   }
   
   collectRegionalSSMLData() {
+    console.log("collectRegionalSSMLData")
     // if a textNode, climb the tree and collect
     // if an element with SSML data, collect this the data + climb and collect
   }

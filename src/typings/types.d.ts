@@ -1,4 +1,3 @@
-
 type EditPoint = {
   tnode: Text;
   idx: number;
@@ -30,4 +29,54 @@ type Partition = {
 
 type FlaggedForSplice = HTMLElement & { replaceMeWith: HTMLElement };
 
-// type what SSMLWorkDiv should report
+// what SSMLWorkDiv should report on hover
+interface hoverSSMLSummary {
+  marks: Array<[DOMRect]>;
+}
+interface SSMLTag {
+  tagType: string;
+  elt: HTMLSpanElement;
+}
+interface ProsodyTag extends SSMLTag {
+  tagType: "prosody";
+  attributes: {
+    pitch?: string;
+    contour?: string;
+    range?: string;
+    rate?: string;
+    duration?: string;
+    volume?: string;
+  };
+}
+interface LocalParamBundle {
+  elt: HTMLSpanElement;
+  params: Array<
+    | RateInformation
+    | VolumeInformation
+    | PitchInformation
+    | IntonationInformation
+    | PronunciationInformation
+  >;
+}
+
+interface RateInformation {
+  param: "rate";
+  rate: string;
+}
+
+interface VolumeInformation {
+  param: "volume";
+  volume: string;
+}
+interface PitchInformation {
+  param: "pitch";
+  pitch: string;
+}
+interface IntonationInformation {
+  param: "intonation";
+  intonation: string;
+}
+
+interface PronunciationInformation {
+  // TO DO
+}

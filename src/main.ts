@@ -46,7 +46,7 @@ function applyListener() {
   const div2 = document.querySelector("[ff-ID='1']");
   div2?.addEventListener("mouseover", (e) => console.log(e.target, e));
 }
-applyListener();
+// applyListener();
 
 const button = document.querySelector("#print-ssml");
 button?.addEventListener("click", () => {

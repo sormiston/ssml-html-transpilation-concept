@@ -1,3 +1,5 @@
+import { SSML_TAGS, MSTTS_PREFIXED_TAGS } from "./constants.js"
+
 function expandSelectionToWordBoundaries(range: Range) {
   let { startContainer, endContainer, startOffset, endOffset } = range;
   const { commonAncestorContainer } = range;
@@ -72,5 +74,15 @@ export function attachSelectionListener(SSMLWorkDiv: any) {
 }
 
 export function attachHoverListener(SSMLWorkDiv: any) {
-  
+  const { elt } = SSMLWorkDiv
+  elt.addEventListener("mouseover", (e: MouseEvent) => {
+    let target = e.target
+    if (!(target instanceof HTMLElement)) return
+    let ssmlTagDetected = [...target.classList].find(c => {
+      return [...Object.values(SSML_TAGS), ...Object.values(MSTTS_PREFIXED_TAGS), "text-node"].includes(c)
+    })
+    if (ssmlTagDetected) {
+      SSMLWorkDiv.collectRegionalSSMLData(ssmlTagDetected)
+    }
+  } )
 }
